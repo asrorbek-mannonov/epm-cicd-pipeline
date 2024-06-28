@@ -2,17 +2,22 @@ pipeline {
 
     agent any
 
+    tools {
+        nodejs "Node 7.8.0"
+    }
+
     stages {
 
         stage("build") {
             steps {
-                echo "Building the application"
+                sh 'npm i'
+                sh 'npm run build'
             }
         }
 
         stage("test") {
             steps {
-                echo "Testing the application"
+                sh 'npm run test'
             }
         }
 
