@@ -6,6 +6,11 @@ pipeline {
         nodejs "Node 7.8.0"
     }
 
+		environment {
+			IMAGE_NAME = 'epm-cicd-nodejs'
+		}
+
+
     stages {
 
         stage("build") {
@@ -17,19 +22,29 @@ pipeline {
 
         stage("test") {
             steps {
+								sh 'printenv | sort'
                 sh 'npm run test'
             }
         }
 
-        stage("build_image") {
+
+				stage("build_image") {
             steps {
-                echo "Building docker image the application"
+                script {
+                    docker.image('node:20').inside('docker') {
+                        sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER .'
+                    }
+                }
             }
         }
 
         stage("deploy") {
             steps {
-                echo "Publishing docker image to Docker Hub"
+                script {
+                    docker.image($IMAGE_NAME + ":" + $BUILD_NUMBER).withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
+                        sh 'docker push $IMAGE_NAME:$BUILD_NUMBER'
+                    }
+                }
             }
         }
 
