@@ -1,14 +1,18 @@
 pipeline {
 
-    agent any
+    agent {
+        docker {
+            image "alpine"
+        }
+    }
 
     tools {
         nodejs "Node 7.8.0"
     }
 
-		environment {
-			IMAGE_NAME = 'epm-cicd-nodejs'
-		}
+	environment {
+		IMAGE_NAME = 'epm-cicd-nodejs'
+	}
 
 
     stages {
