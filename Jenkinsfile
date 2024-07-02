@@ -1,49 +1,33 @@
 pipeline {
 
-    agent none
+    agent any
 
 	environment {
 		IMAGE_NAME = "asrorbekm/node${env.BRANCH_NAME}"
-		DOCKER_HUB_CRED = credentials('docker-hub-credentials')
-		HOME = "${env.WORKSPACE}"
+		REGISTRY = "https://index.docker.io/v1/"
+		DOCKER_CREDS = "docker-hub-credentials"
 	}
 
-
     stages {
+        tools {
+            nodejs "NodeJS 7.8.0"
+        }
 
-         stage("build") {
-             agent {
-                 docker {
-                     image "node:20-alpine"
-                 }
-             }
-             steps {
-                 sh 'npm i'
-                 sh 'npm run build'
-             }
-         }
+        stage("build") {
+            sh 'npm i'
+            sh 'npm run build'
+        }
 
-         stage("test") {
-              agent {
-                 docker {
-                     image "node:20-alpine"
-                 }
-             }
-             steps {
-                 sh 'npm run test'
-             }
-         }
+        stage("test") {
+            steps {
+                sh 'npm run test'
+            }
+        }
 
 
 		stage("build_image") {
 		    environment {
 		        LOGO_REMOTE_SRC = "${env.BRANCH_NAME == 'main' ? 'https://www.svgrepo.com/download/354259/react.svg' : 'https://www.svgrepo.com/download/374034/reacttemplate.svg'}"
-		    }
-		    agent {
-		        docker {
-		            image "docker:27-dind"
-		            args  '-v /var/run/docker.sock:/var/run/docker.sock:ro --group-add docker'
-		        }
 		    }
 
             steps {
@@ -52,8 +36,8 @@ pipeline {
 
                     def dockerImage = docker.build("${env.IMAGE_NAME}:v1")
 
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
-                       dockerImage.push()
+                    docker.withRegistry(${env.REGISTRY}, ${env.DOCKER_CREDS}) {
+                      dockerImage.push()
                     }
                 }
             }
@@ -62,18 +46,16 @@ pipeline {
         stage("deploy") {
             environment {
                 PORT = "${env.BRANCH_NAME == 'main' ? 3000 : 3001}"
+                CONTAINER_NAME = "node${env.BRANCH_NAME}"
             }
-            agent {
-		        docker {
-		            image "docker:27-dind"
-		            args  "-v /var/run/docker.sock:/var/run/docker.sock:ro --group-add docker"
-		        }
-		    }
 
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
-                        sh "docker run -p ${env.PORT}:3000 -d ${env.IMAGE_NAME}:v1 --name ${env.IMAGE_NAME}"
+                    docker.withRegistry(${env.REGISTRY}, ${env.DOCKER_CREDS}) {
+                        def dockerImage = docker.image("${env.IMAGE_NAME}:v1")
+                        dockerImage.pull()
+                        sh "docker rm -f ${env.CONTAINER_NAME} || true"
+                        dockerImage.run("-p ${env.PORT}:3000 --name ${env.CONTAINER_NAME}")
                     }
                 }
             }
