@@ -27,6 +27,16 @@ pipeline {
             }
         }
 
+        stage("dockerfile_lint") {
+            steps {
+                script{
+                    def lintResults = sh(script: "hadolint Dockerfile", returnStdout: true).trim()
+
+                    echo "Lint results:\n${lintResults}"
+                }
+            }
+        }
+
 
 		stage("build_image") {
 		    environment {
