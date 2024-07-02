@@ -46,6 +46,16 @@ pipeline {
             }
         }
 
+        stage("Trivy Scan") {
+            steps {
+                script {
+                   def vulnerabilities = sh(script: "trivy image --exit-code 0 --severity HIGH,MEDIUM,LOW --no-progress ${env.IMAGE_NAME}:v1", returnStdout: true).trim()
+
+                   echo "Vulnerability Report:\n${vulnerabilities}"
+                }
+            }
+        }
+
         stage("deploy") {
             environment {
                 PORT = "${env.BRANCH_NAME == 'main' ? 3000 : 3001}"

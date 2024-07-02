@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eef49203-e90d-40b0-8890-bf7ca5a69637" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Jenkinsfile" beforeDir="false" afterPath="$PROJECT_DIR$/Jenkinsfile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -29,7 +30,7 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;//wsl.localhost/Ubuntu/home/mannonov/Projects/epm-cicd-pipeline&quot;,
@@ -62,7 +63,8 @@
       <workItem from="1719890487217" duration="139000" />
       <workItem from="1719890643124" duration="1404000" />
       <workItem from="1719892962678" duration="4606000" />
-      <workItem from="1719921959995" duration="456000" />
+      <workItem from="1719921959995" duration="1717000" />
+      <workItem from="1719934510315" duration="339000" />
     </task>
     <servers />
   </component>
