@@ -39,7 +39,7 @@ pipeline {
 
                     def dockerImage = docker.build("${env.IMAGE_NAME}:v1")
 
-                    docker.withRegistry(${env.REGISTRY}, ${env.DOCKER_CREDS}) {
+                    docker.withRegistry("${env.REGISTRY}", "${env.DOCKER_CREDS}") {
                       dockerImage.push()
                     }
                 }
@@ -54,7 +54,7 @@ pipeline {
 
             steps {
                 script {
-                    docker.withRegistry(${env.REGISTRY}, ${env.DOCKER_CREDS}) {
+                    docker.withRegistry("${env.REGISTRY}", "${env.DOCKER_CREDS}") {
                         def dockerImage = docker.image("${env.IMAGE_NAME}:v1")
                         dockerImage.pull()
                         sh "docker rm -f ${env.CONTAINER_NAME} || true"
