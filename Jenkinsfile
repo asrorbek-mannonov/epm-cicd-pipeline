@@ -6,21 +6,24 @@ pipeline {
 		IMAGE_NAME = "asrorbekm/node${env.BRANCH_NAME}"
 		REGISTRY = "https://index.docker.io/v1/"
 		DOCKER_CREDS = "docker-hub-credentials"
+		NODE_JS = 'NodeJS 7.8.0'
 	}
 
     stages {
-        tools {
-            nodejs "NodeJS 7.8.0"
-        }
-
         stage("build") {
-            sh 'npm i'
-            sh 'npm run build'
+            steps {
+                nodejs(nodeJSInstallationName: "${env.NODE_JS}") {
+                    sh 'npm i'
+                    sh 'npm run build'
+                }
+            }
         }
 
         stage("test") {
             steps {
-                sh 'npm run test'
+                nodejs(nodeJSInstallationName: "${env.NODE_JS}") {
+                    sh 'npm run test'
+                }
             }
         }
 
